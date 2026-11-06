@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>JBA AICare™ GLP-1 · Tập 5</title>
+  <style>
+    :root{font-family:Arial,Helvetica,sans-serif;color:#173f36;background:#e9ede8}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;display:flex;flex-direction:column}
+    header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:14px max(18px,4vw);border-bottom:1px solid #d5dfd7;gap:12px}
+    header strong{font-size:17px} header small{display:block;color:#8c762e;margin-top:5px}
+    .book-area{flex:1;display:flex;justify-content:center;align-items:center;min-height:0;padding:18px 10px 8px;overflow:hidden}
+    #book{margin:auto} #book .page{background:#fff;overflow:hidden} #book img{width:100%;height:100%;object-fit:fill;display:block}
+    .controls{background:#fff;display:flex;align-items:center;justify-content:center;gap:14px;padding:14px;box-shadow:0 -3px 20px #183f3620;flex-wrap:wrap}
+    button,a.control{border:1px solid #d7d6ca;border-radius:8px;background:#fff;color:#174537;padding:10px 15px;cursor:pointer;text-decoration:none;font-size:14px}
+    button:hover,a.control:hover{background:#f5f0dc} button:disabled{opacity:.35;cursor:default}
+    #counter{min-width:90px;text-align:center;font-weight:600} #fallback{display:none;text-align:center;margin:auto;max-width:500px}
+    #fallback img{width:100%;max-height:70vh;object-fit:contain} footer{text-align:center;padding:8px;font-size:11px;color:#61746c}
+    @media(max-width:600px){header strong{font-size:14px}.controls{gap:7px;padding:10px}button,a.control{padding:9px 11px}.book-area{padding:10px 0 0}}
+  </style>
+</head>
+<body>
+  <header>
+    <div><strong>JBA AICare™ GLP-1</strong><small>TẬP 5 · MỘT TUẦN MỘT MŨI HAY MỖI SÁNG MỘT VIÊN?</small></div>
+    <button id="full">⛶ Toàn màn hình</button>
+  </header>
+  <main class="book-area">
+    <div id="book"></div>
+    <div id="fallback"><img id="fallbackImg" src="pages/01.jpg" alt="Trang sách"></div>
+  </main>
+  <nav class="controls">
+    <button id="prev">← Trang trước</button><span id="counter">1 / 12</span><button id="next">Trang sau →</button>
+    <a class="control" href="original.pdf" target="_blank" rel="noopener">Xem PDF</a>
+  </nav>
+  <footer>© JBA AICare · Click/vuốt trang hoặc dùng phím ← → để lật trang</footer>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+  <script>
+    const total=12,book=document.getElementById('book'),fallback=document.getElementById('fallback'),fallbackImg=document.getElementById('fallbackImg'),counter=document.getElementById('counter');
+    let current=0,flip=null;
+    for(let i=1;i<=total;i++){
+      const p=document.createElement('div'); p.className='page';
+      const im=document.createElement('img'); im.src='pages/'+String(i).padStart(2,'0')+'.jpg'; im.alt='Trang '+i; im.loading=i<4?'eager':'lazy';
+      p.appendChild(im); book.appendChild(p);
+    }
+    function refresh(){counter.textContent=(current+1)+' / '+total;document.getElementById('prev').disabled=current===0;document.getElementById('next').disabled=current===total-1;fallbackImg.src='pages/'+String(current+1).padStart(2,'0')+'.jpg'}
+    if(window.St&&St.PageFlip){try{flip=new St.PageFlip(book,{width:395,height:559,size:'stretch',minWidth:245,maxWidth:500,minHeight:346,maxHeight:708,showCover:true,usePortrait:true,mobileScrollSupport:false,drawShadow:true,maxShadowOpacity:.35,flippingTime:850,autoSize:true});flip.loadFromHTML(document.querySelectorAll('.page'));flip.on('flip',e=>{current=e.data;refresh()})}catch(e){flip=null}}
+    if(!flip){book.style.display='none';fallback.style.display='block'}
+    function move(n){if(flip){if(n>0)flip.flipNext();else flip.flipPrev()}else{current=Math.max(0,Math.min(total-1,current+n));refresh()}}
+    document.getElementById('prev').onclick=()=>move(-1); document.getElementById('next').onclick=()=>move(1);
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1)});
+    document.getElementById('full').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};
+    refresh();
+  </script>
+</body>
+</html>
